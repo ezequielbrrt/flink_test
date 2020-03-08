@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var specieLabel: UILabel!
@@ -18,6 +18,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var originLabel: UILabel!
     @IBOutlet weak var originView: UIView!
     @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var LocationView: UIView!
     
     var character: ResultCharacter?
     var dvm: DetailViewModel?
@@ -37,11 +38,17 @@ class DetailViewController: UIViewController {
     
     private func configUI(){
         self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2
-        self.originView.layer.cornerRadius = 10
-        self.originView.layer.shadowColor =  UIColor.gray.cgColor
-        self.originView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-        self.originView.layer.shadowRadius = 12.0
-        self.originView.layer.shadowOpacity = 0.4
+        
+        configUiCard(view: self.originView)
+        configUiCard(view: self.LocationView)
+    }
+    
+    private func configUiCard(view: UIView){
+        view.layer.cornerRadius = 10
+        view.layer.shadowColor =  UIColor.gray.cgColor
+        view.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+        view.layer.shadowRadius = 12.0
+        view.layer.shadowOpacity = 0.4
     }
     
     private func setUpData(){
@@ -64,4 +71,21 @@ class DetailViewController: UIViewController {
     }
 
 
+    //MARK: COLLECTIONVIEW METHODS
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.dvm!.characterDetail.episode!.count
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let vm = self.dvm!.characterDetail.episode![indexPath.row]
+        let episode = vm.components(separatedBy: "/").last
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EpisodeCollectionCell", for: indexPath) as! EpisodeCollectionCell
+        
+        cell.episodeLabel.text = episode
+        
+        return cell
+    }
 }

@@ -15,10 +15,10 @@ class AppConfigurator: NSObject{
     
     
     // MARK: COLORS
-    static let mainColor = Tools.RGB(r: 70, g: 193, b: 128)
+    static let mainColor = Tools.RGB(r: 32, g: 35, b: 41)
     static let secondaryColor = Tools.RGB(r: 70, g: 193, b: 128)
     
-    static let mainColorHex = ""
+    static let mainColorHex = "202329"
     static let secondaryColorHex = ""
     
 }

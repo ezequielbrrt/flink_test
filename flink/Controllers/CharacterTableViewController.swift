@@ -61,9 +61,8 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                         
                         self?.tableView.reloadData()
                     case .failure(_):
-                        print("trono")
                         self?.tableView.restore(showSingleLine: false)
-                        self?.tableView.setEmptyView(title: "Sin resultados", message: "tu busqueda no arrojo ningún resultado", messageImage: UIImage.init(named: "navegador.png")!)
+                        self?.tableView.setEmptyView(title: "Sin resultados", message: "Tú busqueda no arrojo ningún resultado", messageImage: UIImage.init(named: "navegador.png")!)
                         
                 }
             }
@@ -148,6 +147,9 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
             cell.specieLabel?.text = vm.character.species
             cell.statusLabel?.text = vm.character.status
             cell.profileImageView.image = nil
+            cell.loader.isHidden = false
+            cell.loader.startAnimating()
+            cell.loader.color = AppConfigurator.mainColor
             
             Tools.downloadImage(url: URL(string: vm.character.image!)!) { (image, error) in
                 if error == nil {
@@ -214,7 +216,6 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         if (searchController.isBeingDismissed){
             if text.isEmpty{
                 self.characterListViewModel.charactersViewModel = self.characterListViewModel.auxCharacters
-                print("reiniciando")
                 self.tableView.reloadData()
             }
             
