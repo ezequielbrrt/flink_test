@@ -10,4 +10,5 @@ import Foundation
 
 enum AppUrls: String{
     case getCharacters = "character/"
+    case getLocation = "location/"
 }

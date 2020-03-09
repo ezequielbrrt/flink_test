@@ -41,6 +41,8 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         configUiCard(view: self.originView)
         configUiCard(view: self.LocationView)
+        let gesture = UITapGestureRecognizer(target: self, action:  #selector(self.showLocationModal))
+        self.LocationView.addGestureRecognizer(gesture)
     }
     
     private func configUiCard(view: UIView){
@@ -49,6 +51,14 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         view.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
         view.layer.shadowRadius = 12.0
         view.layer.shadowOpacity = 0.4
+    }
+    
+    @objc private func showLocationModal(){
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let modalLocation = storyBoard.instantiateViewController(withIdentifier: "ModalLocationViewController") as! ModalLocationViewController
+        modalLocation.locationId = self.dvm!.characterDetail.location!.url.components(separatedBy: "/").last
+        modalLocation.modalPresentationStyle = .overFullScreen
+        self.present(modalLocation, animated: true, completion: nil)
     }
     
     private func setUpData(){
