@@ -15,12 +15,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="title.png" translatesAutoresizingMaskIntoConstraints="NO" id="N2y-Es-gay">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="title.png" translatesAutoresizingMaskIntoConstraints="NO" id="N2y-Es-gay">
                                 <rect key="frame" x="20" y="345" width="374" height="206"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="206" id="VnB-FR-Hcg"/>
+                                    <constraint firstAttribute="width" constant="374" id="rW0-I0-i5C"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="N2y-Es-gay" secondAttribute="trailing" constant="20" id="Gti-Vp-szF"/>
+                            <constraint firstItem="N2y-Es-gay" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="KSL-65-JRa"/>
+                            <constraint firstItem="N2y-Es-gay" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="SqV-T6-Pk5"/>
+                            <constraint firstItem="N2y-Es-gay" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Vdl-3g-xt6"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>

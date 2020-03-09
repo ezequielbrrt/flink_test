@@ -20,6 +20,8 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
     var queryParameter: String = "name"
     let itemsStatus = ["Alive" , "Dead", "Unknown"]
     let itemsGenders = ["Female", "Male", "Genderless", "Unknown"]
+    var initialEffect: Bool = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +31,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
     }
     
     @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
+        configSearchBar(placeHolder: Strings.searchByName)
         populateCharacters()
     }
     
@@ -78,7 +81,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         
         self.tableView.showLoader()
         self.characterListViewModel.restoreCharacters()
-        self.tableView.reloadData()
+        self.updateData()
 
         if let character = CharactersOptions.getCharacterByName(name: name, queryParameter: self.queryParameter){
             Webservice().load(resource:character){[weak self] result in
@@ -93,7 +96,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                                 self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
                             }
                             
-                            self?.tableView.reloadData()
+                            self?.updateData()
                         case .failure(_):
                             self?.tableView.restore(showSingleLine: false)
                             self?.tableView.setEmptyView(title: Strings.noResults, message: Strings.noResultsDesc, messageImage: UIImage.init(named: "navegador.png")!)
@@ -135,7 +138,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                                 self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
                                 }
                                 
-                                self?.tableView.reloadData()
+                                self?.updateData()
                             case .failure(let error):
                                 print(error)
                         }
@@ -157,7 +160,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                                 self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
                                     }
                                 
-                                self?.tableView.reloadData()
+                                self?.updateData()
                                 self?.isUpdating = false
                             case .failure(let error):
                                 print(error)
@@ -178,6 +181,35 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         self.tableView.restore(showSingleLine: false)
         populateCharacters()
     }
+    
+    func updateData(){
+       let dispatchTime = DispatchTime.now() + 0.10;
+       DispatchQueue.main.asyncAfter(deadline: dispatchTime){
+                      
+           if self.initialEffect == false
+           {
+               self.initialEffect = true
+               UIView.transition(with: self.tableView, duration: 0.50,
+                                 options: UIView.AnimationOptions.transitionCrossDissolve,
+                                 animations: {
+                                   self.tableView.reloadData()
+                                   
+               },
+                                 completion: nil)
+           }
+           else
+           {
+               UIView.transition(with: self.tableView!, duration: 0.30,
+                                 options: UIView.AnimationOptions.transitionCrossDissolve,
+                                 animations: {
+                                   self.tableView.reloadData()
+                                   
+               },
+                                 completion: nil)
+           }
+           
+       }
+   }
     
     // MARK: TABLE VIEW METHODS
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -268,6 +300,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
     }
     
     
+    // MARK: SEARCH FILTER ITEM CLICK
     @IBAction func searchFilter(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "Select search filter", message: nil, preferredStyle: .actionSheet)
         
@@ -301,6 +334,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         self.present(alert, animated: true)
     }
     
+    // MARK: SEGMENTED CONTROL METHODS
     @objc private func indexChangedStatus(_ sender: UISegmentedControl){
         switch sender.selectedSegmentIndex{
         case 0:
