@@ -2,7 +2,7 @@
 //  Strings.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 06/03/20.
+//  Created by Ezequiel Barreto on 06/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -21,5 +21,12 @@ class Strings: NSObject{
     static let cancel = NSLocalizedString("Cancel", comment: "Cancel")
     static let searchBySpecie = NSLocalizedString("Search by specie", comment: "Search by specie")
     static let searchByName = NSLocalizedString("Search by name", comment: "Search by name")
-    static let searchByType = NSLocalizedString("searchByType", comment: "searchByType")
+    static let searchByType = NSLocalizedString("Search by type", comment: "Search by type")
+    static let selectfilter = NSLocalizedString("Select search filter", comment: "Select search filter")
+    static let name = NSLocalizedString("name", comment: "name")
+    static let status = NSLocalizedString("status", comment: "status")
+    static let specie = NSLocalizedString("specie", comment: "specie")
+    static let species = NSLocalizedString("species", comment: "species")
+    static let type = NSLocalizedString("type", comment: "type")
+    static let gender = NSLocalizedString("gender", comment: "gender")
 }

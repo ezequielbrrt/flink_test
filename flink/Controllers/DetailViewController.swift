@@ -2,7 +2,7 @@
 //  DetailViewController.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 07/03/20.
+//  Created by Ezequiel Barreto on 07/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -10,6 +10,7 @@ import UIKit
 
 class DetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
+    // MARK: UIELEMENTS
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var specieLabel: UILabel!
     @IBOutlet weak var statusLabel: UILabel!
@@ -21,6 +22,7 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet weak var LocationView: UIView!
     @IBOutlet weak var episodeCollectionView: UICollectionView!
     
+    // MARK: VARIABLES
     var character: ResultCharacter?
     var dvm: DetailViewModel?
     
@@ -33,10 +35,12 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         
     }
     
+    // MARK: POPULATEMETHODS
     private func populateData(){
         self.dvm = DetailViewModel(character: character!)
     }
     
+    // MARK: CONFIGMETHODS
     private func configUI(){
         self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2
         
@@ -59,6 +63,26 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         view.layer.shadowOpacity = 0.4
     }
     
+    private func setUpData(){
+        
+        self.title = self.dvm?.characterDetail.name
+        self.specieLabel.text = self.dvm?.characterDetail.species
+        self.statusLabel.text = self.dvm?.characterDetail.status
+        self.typeLabel.text = self.dvm?.characterDetail.type
+        self.genderLabel.text = self.dvm?.characterDetail.gender
+        self.originLabel.text = self.dvm?.characterDetail.origin?.name
+        self.locationLabel.text = self.dvm?.characterDetail.location?.name
+        Tools.downloadImage(url: URL(string: self.dvm!.characterDetail.image!)!) { (image, error) in
+            if error == nil {
+                DispatchQueue.main.async {
+                    
+                    self.profileImageView.image = image
+                }
+            }
+        }
+    }
+    
+    // MAKR: OPENMODAL METHODS
     @objc private func showLocationModal(){
         if Tools.hasInternet(){
             showModal(id: self.dvm!.characterDetail.location!.url.components(separatedBy: "/").last!)
@@ -86,25 +110,6 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.present(modalLocation, animated: true, completion: nil)
     }
     
-    private func setUpData(){
-        
-        self.title = self.dvm?.characterDetail.name
-        self.specieLabel.text = self.dvm?.characterDetail.species
-        self.statusLabel.text = self.dvm?.characterDetail.status
-        self.typeLabel.text = self.dvm?.characterDetail.type
-        self.genderLabel.text = self.dvm?.characterDetail.gender
-        self.originLabel.text = self.dvm?.characterDetail.origin?.name
-        self.locationLabel.text = self.dvm?.characterDetail.location?.name
-        Tools.downloadImage(url: URL(string: self.dvm!.characterDetail.image!)!) { (image, error) in
-            if error == nil {
-                DispatchQueue.main.async {
-                    
-                    self.profileImageView.image = image
-                }
-            }
-        }
-    }
-
     private func showAlertNoWifi(){
         let alert = UIAlertController(title: Strings.noWifi, message: Strings.noWifiDesc, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Strings.ok, style: .default, handler:nil))

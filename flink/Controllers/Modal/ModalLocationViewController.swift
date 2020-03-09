@@ -2,7 +2,7 @@
 //  ModalLocationViewController.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 08/03/20.
+//  Created by Ezequiel Barreto on 08/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -10,6 +10,7 @@ import UIKit
 
 class ModalLocationViewController: UIViewController {
 
+    //MARK: UIELEMENTS
     @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var nameLabel: UILabel!
@@ -22,12 +23,12 @@ class ModalLocationViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet var stackView: [UIStackView]!
     
-    
+    // MARK: VARIABLES
     var isLocation: Bool = true
     var locationId: String?
-    
     var vm: LocationViewModel = LocationViewModel()
     var vmEpisode: EpisodeViewModel = EpisodeViewModel()
+    var episodeVariables = ["Episode", "Air Date", "Episode location"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +38,8 @@ class ModalLocationViewController: UIViewController {
         
     }
 
+    // MARK: CONFIGURATION METHODS
+    
     private func populateData(){
 
         if Tools.hasInternet(){
@@ -88,9 +91,9 @@ class ModalLocationViewController: UIViewController {
         self.nameLabel.text = episode.name
         self.typeLabel.text = episode.episode
         self.dimensionLabel.text = episode.airDate
-        self.typeTitleLabel.text = "Episode"
-        self.dimentsionTitleLabel.text = "Air date"
-        self.titleLabel.text = "Episode location"
+        self.typeTitleLabel.text = self.episodeVariables[0]
+        self.dimentsionTitleLabel.text = self.episodeVariables[1]
+        self.titleLabel.text = self.episodeVariables[2]
     }
     
     private func showElements(hidden: Bool){
@@ -117,6 +120,7 @@ class ModalLocationViewController: UIViewController {
         self.backgroundView.addGestureRecognizer(tapBack)
     }
     
+    // MARK: CARDS CLICKS METHODS
     @objc func handleClick(gesture: UITapGestureRecognizer) {
         self.closeView()
     }
@@ -129,7 +133,7 @@ class ModalLocationViewController: UIViewController {
         
     }
     
-    
+    // MARK: CLOSE VIEW
     func closeView(){
         self.dismiss(animated: true, completion: nil)
     }

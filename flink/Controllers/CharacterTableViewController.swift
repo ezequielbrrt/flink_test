@@ -2,7 +2,7 @@
 //  CharactersTableViewController.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 06/03/20.
+//  Created by Ezequiel Barreto on 06/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -30,33 +30,24 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         
     }
     
-    @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
-        configSearchBar(placeHolder: Strings.searchByName)
-        populateCharacters()
-    }
-    
     private func configUI(){
         self.navigationItem.largeTitleDisplayMode = .always
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        
-
         self.refreshControl = UIRefreshControl()
         self.refreshControl!.attributedTitle = NSAttributedString(string: Strings.pullToGet)
         self.refreshControl!.addTarget(self, action: #selector(handleRefresh(_:)), for: UIControl.Event.valueChanged)
         tableView.addSubview(self.refreshControl!)
         
         configSearchBar(placeHolder: Strings.searchByName)
-    
     }
     
+    // MARK: ELEMENTS CONFIGURATION
     private func configSearchBar(placeHolder: String) {
-        
         resultSearchController.searchResultsUpdater = self
         resultSearchController.searchBar.sizeToFit()
         resultSearchController.searchBar.placeholder = placeHolder
         resultSearchController.searchBar.showsCancelButton = false
         tableView.tableHeaderView = resultSearchController.searchBar
-
     }
     
     private func configSegmentedStatus(){
@@ -77,6 +68,13 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         self.tableView.tableHeaderView = segmentedControl
     }
     
+    // MARK: HANDLE REFRESH
+    @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
+        configSearchBar(placeHolder: Strings.searchByName)
+        populateCharacters()
+    }
+    
+    // MARK: POPULATE METHODS
     private func findCharacter(name : String){
         
         self.tableView.showLoader()
@@ -91,15 +89,20 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                             self?.nextPage = response.info.next
                             self?.tableView.restore(showSingleLine: true)
                             self?.characterListViewModel.charactersViewModel = response.results.map(CharacterViewModel.init)
-                           
+                            
                             if !(self?.nextPage.isEmpty)!{
                                 self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
                             }
                             
                             self?.updateData()
                         case .failure(_):
-                            self?.tableView.restore(showSingleLine: false)
-                            self?.tableView.setEmptyView(title: Strings.noResults, message: Strings.noResultsDesc, messageImage: UIImage.init(named: "navegador.png")!)
+                            if Tools.hasInternet(){
+                                self?.tableView.restore(showSingleLine: false)
+                                self?.tableView.setEmptyView(title: Strings.noResults, message: Strings.noResultsDesc, messageImage: UIImage.init(named: "navegador.png")!)
+                            }else{
+                                self!.showEmptyTable()
+                            }
+                            
                             
                     }
                 }
@@ -157,7 +160,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                                 self?.characterListViewModel.charactersViewModel.append(contentsOf: response.results.map(CharacterViewModel.init))
                                     
                                    if !(self?.nextPage.isEmpty)!{
-                                self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
+                                    self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
                                     }
                                 
                                 self?.updateData()
@@ -170,60 +173,59 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                 }
             }
         }else{
-            self.tableView.isScrollEnabled = false
-            self.tableView.restore(showSingleLine: false)
-            self.tableView.setEmptyView(title: Strings.noWifi, message: Strings.noWifiDesc, messageImage: UIImage.init(named: "nowifi.png")!, select: #selector(self.retryConnection), delegate: self)
+           showEmptyTable()
         }
         
     }
     
+    // MARK: HANDLERETRY
     @objc func retryConnection() {
         self.tableView.restore(showSingleLine: false)
         populateCharacters()
     }
     
-    func updateData(){
-       let dispatchTime = DispatchTime.now() + 0.10;
-       DispatchQueue.main.asyncAfter(deadline: dispatchTime){
-                      
-           if self.initialEffect == false
-           {
-               self.initialEffect = true
-               UIView.transition(with: self.tableView, duration: 0.50,
-                                 options: UIView.AnimationOptions.transitionCrossDissolve,
-                                 animations: {
-                                   self.tableView.reloadData()
-                                   
-               },
-                                 completion: nil)
-           }
-           else
-           {
-               UIView.transition(with: self.tableView!, duration: 0.30,
-                                 options: UIView.AnimationOptions.transitionCrossDissolve,
-                                 animations: {
-                                   self.tableView.reloadData()
-                                   
-               },
-                                 completion: nil)
-           }
-           
-       }
-   }
-    
     // MARK: TABLE VIEW METHODS
+    private func showEmptyTable(){
+        self.tableView.isScrollEnabled = false
+        self.tableView.restore(showSingleLine: false)
+        self.tableView.setEmptyView(title: Strings.noWifi, message: Strings.noWifiDesc, messageImage: UIImage.init(named: "nowifi.png")!, select: #selector(self.retryConnection), delegate: self)
+    }
+    
+    private func updateData(){
+        let dispatchTime = DispatchTime.now() + 0.10;
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime){
+                       
+            if self.initialEffect == false
+            {
+                self.initialEffect = true
+                UIView.transition(with: self.tableView, duration: 0.50,
+                                  options: UIView.AnimationOptions.transitionCrossDissolve,
+                                  animations: {
+                                    self.tableView.reloadData()
+                                    
+                },
+                                  completion: nil)
+            }
+            else
+            {
+                UIView.transition(with: self.tableView!, duration: 0.30,
+                                  options: UIView.AnimationOptions.transitionCrossDissolve,
+                                  animations: {
+                                    self.tableView.reloadData()
+                                    
+                },
+                                  completion: nil)
+            }
+            
+        }
+    }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if !self.nextPage.isEmpty{
-            return self.characterListViewModel.charactersViewModel.count - 1
-        }else{
-            return self.characterListViewModel.charactersViewModel.count
-        }
-        
+        return self.characterListViewModel.charactersViewModel.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -280,7 +282,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                 if !self.isUpdating{
                     self.isUpdating = true
                     if Tools.hasInternet(){
-                    self.characterListViewModel.charactersViewModel.removeLast()
+                        self.characterListViewModel.charactersViewModel.removeLast()
                         self.populateCharacters(nextPage: nextPage)
                     }else{
                         showAlertNoWifi()
@@ -302,36 +304,41 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
     
     // MARK: SEARCH FILTER ITEM CLICK
     @IBAction func searchFilter(_ sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "Select search filter", message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "Name", style: .default, handler: {action in
-            self.configSearchBar(placeHolder: Strings.searchByName)
-            self.queryParameter = "name"
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Status", style: .default, handler: {action in
-            self.configSegmentedStatus()
-            self.queryParameter = "status"
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Specie", style: .default, handler: {action in
-            self.configSearchBar(placeHolder: Strings.searchBySpecie)
-            self.queryParameter = "species"
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Type", style: .default, handler: {action in
-            self.configSearchBar(placeHolder: Strings.searchByType)
-            self.queryParameter = "type"
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Gender", style: .default, handler: {action in
-            self.configSegmentedGender()
-            self.queryParameter = "gender"
-        }))
-        alert.addAction(UIAlertAction(title: Strings.cancel, style: .cancel, handler: nil))
+        if Tools.hasInternet(){
+            let alert = UIAlertController(title: Strings.selectfilter, message: nil, preferredStyle: .actionSheet)
+                
+                alert.addAction(UIAlertAction(title: Strings.name.capitalized, style: .default, handler: {action in
+                    self.configSearchBar(placeHolder: Strings.searchByName)
+                    self.queryParameter = Strings.name
+                }))
+                
+                alert.addAction(UIAlertAction(title: Strings.status.capitalized, style: .default, handler: {action in
+                    self.configSegmentedStatus()
+                    self.queryParameter = Strings.status
+                }))
+                
+                alert.addAction(UIAlertAction(title: Strings.specie.capitalized, style: .default, handler: {action in
+                    self.configSearchBar(placeHolder: Strings.searchBySpecie)
+                    self.queryParameter = Strings.species
+                }))
+                
+                alert.addAction(UIAlertAction(title: Strings.type.capitalized, style: .default, handler: {action in
+                    self.configSearchBar(placeHolder: Strings.searchByType)
+                    self.queryParameter = Strings.type
+                }))
+                
+                alert.addAction(UIAlertAction(title: Strings.gender.capitalized, style: .default, handler: {action in
+                    self.configSegmentedGender()
+                    self.queryParameter = Strings.gender
+                }))
+                alert.addAction(UIAlertAction(title: Strings.cancel, style: .cancel, handler: nil))
 
-    
-        self.present(alert, animated: true)
+            
+                self.present(alert, animated: true)
+        }else{
+            self.showEmptyTable()
+        }
+        
     }
     
     // MARK: SEGMENTED CONTROL METHODS

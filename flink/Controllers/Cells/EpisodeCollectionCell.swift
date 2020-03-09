@@ -2,7 +2,7 @@
 //  EpisodeCollectionCell.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 07/03/20.
+//  Created by Ezequiel Barreto on 07/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -10,15 +10,16 @@ import UIKit
 
 class EpisodeCollectionCell: UICollectionViewCell {
     
+    // MARK: UIELEMENTS
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var episodeLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
         configUI()
     }
     
+    // MARK: CONFIGURATION
     private func configUI(){
         self.containerView.layer.cornerRadius = 10
         self.containerView.layer.shadowColor =  UIColor.gray.cgColor

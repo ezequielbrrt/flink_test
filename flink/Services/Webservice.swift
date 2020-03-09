@@ -2,7 +2,7 @@
 //  Webservice.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 06/03/20.
+//  Created by Ezequiel Barreto on 06/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -36,7 +36,6 @@ extension Resource{
 class Webservice{
 
     func load<T>(resource: Resource<T>, completion: @escaping (Result<T, NetworkError>) -> Void){
-        print("url de envio")
         print(resource.url)
         URLSession.shared.dataTask(with: resource.url){ (data, response, error) in
             guard let data = data, error == nil else{
@@ -50,7 +49,6 @@ class Webservice{
                     completion(.success(result))
                 }
             }else{
-                
                 completion(.failure(.decodingError))
             }
             

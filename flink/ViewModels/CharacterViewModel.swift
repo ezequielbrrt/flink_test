@@ -2,7 +2,7 @@
 //  CharactersViewModel.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 06/03/20.
+//  Created by Ezequiel Barreto on 06/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -18,9 +18,6 @@ class CharacterListViewModel{
         self.filteredCharactersVM = [CharacterViewModel]()
         self.auxCharacters = [CharacterViewModel]()
     }
-    
-    
-    
 }
 
 extension CharacterListViewModel{

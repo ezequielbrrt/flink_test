@@ -621,50 +621,5 @@
             </objects>
             <point key="canvasLocation" x="4671.0144927536239" y="132.58928571428572"/>
         </scene>
-        <!--Message View-->
-        <scene sceneID="wNf-nP-FjJ">
-            <objects>
-                <viewController storyboardIdentifier="MessageView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="rMA-rX-9VF" customClass="MessageView" customModule="flink" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="aVq-VU-0w7"/>
-                        <viewControllerLayoutGuide type="bottom" id="vME-J3-FDh"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="ycR-xp-0Eq">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gXW-w2-XCz">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tu conexion a Internet es lenta, por favor espera a que termine la carga" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="11" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fuu-XJ-bTI">
-                                        <rect key="frame" x="15" y="23" width="382" height="57"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <viewLayoutGuide key="safeArea" id="02W-lU-b5F"/>
-                    </view>
-                    <connections>
-                        <outlet property="textDisplay" destination="fuu-XJ-bTI" id="lSX-gf-qgh"/>
-                        <outlet property="viewConnection" destination="gXW-w2-XCz" id="vGc-Ff-rba"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="hEW-Px-cux" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="5646" y="133"/>
-        </scene>
     </scenes>
 </document>

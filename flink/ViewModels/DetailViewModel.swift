@@ -2,7 +2,7 @@
 //  DetailViewModel.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 07/03/20.
+//  Created by Ezequiel Barreto on 07/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -16,6 +16,5 @@ class DetailViewModel{
     init(character: ResultCharacter) {
         self.characterDetail = character
     }
-
 
 }

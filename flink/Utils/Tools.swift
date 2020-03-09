@@ -2,7 +2,7 @@
 //  Tools.swift
 //  flink
 //
-//  Created by beTech CAPITAL on 06/03/20.
+//  Created by Ezequiel Barreto on 06/03/20.
 //  Copyright © 2020 Ezequiel Barreto. All rights reserved.
 //
 
@@ -87,41 +87,12 @@ class Tools: NSObject{
            let needsConnection = flags.contains(.connectionRequired)
            return (isReachable && !needsConnection)
        }
-    
-    class func showSlowConnectionView (inView : UIViewController)
-    {
-        
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.warning)
-        
-        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-        let slowConnectionView : MessageView = storyboard.instantiateViewController(withIdentifier: "MessageView") as! MessageView
-        
-        let screenFrame : CGRect = CGRect(x: 0,
-                                          y: -100,
-                                          width: UIScreen.main.bounds.size.width,
-                                          height: 100)
-        
-        slowConnectionView.view.frame = screenFrame
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        inView.view.addSubview(slowConnectionView.view);
-        inView.view.bringSubviewToFront(slowConnectionView.view)
-        
-        
-        slowConnectionView.show()
-        
-        let dispatchTime = (DispatchTime.now() + 4.0)
-        DispatchQueue.main.asyncAfter(deadline: dispatchTime)
-        {
-            slowConnectionView.hidden()
-        }
-    }
 
 }
 
 extension UITableView {
+    
+    ///Show an activity indicator view inside table view at center
     func showLoader(){
         let emptyView = UIView(frame: CGRect(x: self.center.x, y: self.center.y, width: self.bounds.size.width, height: self.bounds.size.height))
         
@@ -143,6 +114,7 @@ extension UITableView {
         
     }
     
+    /// Show a view inside table view at center, the view can contains a button to do some action
     func setEmptyView(title: String, message: String,
                          messageImage: UIImage, select: Selector? = nil,
                          delegate: UIViewController? = nil) {
@@ -188,10 +160,7 @@ extension UITableView {
            messageLabel.numberOfLines = 0
            messageLabel.textAlignment = .center
            
-           DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { messageImageView.shake()
-           }
-           //Tools.shakeAnimation(viewAnimation: messageImageView, moveScale: 2, minimumAlpha: 8, duration: 2)
-           
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { messageImageView.shake()}
            
            if delegate != nil{
                
@@ -208,9 +177,6 @@ extension UITableView {
                button.setTitleColor(.white, for: .normal)
                button.widthAnchor.constraint(equalToConstant: 120).isActive = true
                button.backgroundColor = AppConfigurator.mainColor
-               //Tools.setRoundedButton(button: button)
-               //Tools.setHeightButton(button: button)
-               //Tools.setFont(UIComponent: button)
            }
            
            
@@ -218,6 +184,7 @@ extension UITableView {
            self.separatorStyle = .none
        }
     
+    /// Restore the table view background, with the option to show separator style
     func restore(showSingleLine: Bool = true) {
         self.backgroundView = nil
         if showSingleLine{
