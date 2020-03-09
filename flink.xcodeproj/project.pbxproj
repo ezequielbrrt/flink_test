@@ -22,6 +22,12 @@
 		93086CF324130A9A004CBB1E /* CharacterRM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93086CF224130A9A004CBB1E /* CharacterRM.swift */; };
 		93086CF6241315D1004CBB1E /* CharacterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93086CF5241315D1004CBB1E /* CharacterTableViewCell.swift */; };
 		93086CF824131785004CBB1E /* Urls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93086CF724131785004CBB1E /* Urls.swift */; };
+		93A5254C2415BEB300A43626 /* title.png in Resources */ = {isa = PBXBuildFile; fileRef = 93A5254B2415BEB300A43626 /* title.png */; };
+		93A5254E2415C02A00A43626 /* nowifi.png in Resources */ = {isa = PBXBuildFile; fileRef = 93A5254D2415C02A00A43626 /* nowifi.png */; };
+		93A525512415C5FE00A43626 /* ModalLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A525502415C5FE00A43626 /* ModalLocationViewController.swift */; };
+		93A525532415CA5100A43626 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A525522415CA5100A43626 /* MessageView.swift */; };
+		93A525552415CB9C00A43626 /* nube.png in Resources */ = {isa = PBXBuildFile; fileRef = 93A525542415CB9C00A43626 /* nube.png */; };
+		93A525572415D64C00A43626 /* AlertWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A525562415D64C00A43626 /* AlertWindow.swift */; };
 		93C001B424148794007EF2C1 /* EpisodeCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C001B324148794007EF2C1 /* EpisodeCollectionCell.swift */; };
 		93F1A95A24134ED200E296BF /* LoaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F1A95924134ED200E296BF /* LoaderCell.swift */; };
 		93F1A95C241366E000E296BF /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F1A95B241366E000E296BF /* Error.swift */; };
@@ -60,6 +66,12 @@
 		93086CF224130A9A004CBB1E /* CharacterRM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterRM.swift; sourceTree = "<group>"; };
 		93086CF5241315D1004CBB1E /* CharacterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterTableViewCell.swift; sourceTree = "<group>"; };
 		93086CF724131785004CBB1E /* Urls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Urls.swift; sourceTree = "<group>"; };
+		93A5254B2415BEB300A43626 /* title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = title.png; sourceTree = "<group>"; };
+		93A5254D2415C02A00A43626 /* nowifi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nowifi.png; sourceTree = "<group>"; };
+		93A525502415C5FE00A43626 /* ModalLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalLocationViewController.swift; sourceTree = "<group>"; };
+		93A525522415CA5100A43626 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		93A525542415CB9C00A43626 /* nube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nube.png; sourceTree = "<group>"; };
+		93A525562415D64C00A43626 /* AlertWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertWindow.swift; sourceTree = "<group>"; };
 		93C001B324148794007EF2C1 /* EpisodeCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCollectionCell.swift; sourceTree = "<group>"; };
 		93F1A95924134ED200E296BF /* LoaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderCell.swift; sourceTree = "<group>"; };
 		93F1A95B241366E000E296BF /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -162,6 +174,7 @@
 		93086CE22412C962004CBB1E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				93A5254F2415C33200A43626 /* Modal */,
 				93086CF4241315BE004CBB1E /* Cells */,
 				93086CEE241309CF004CBB1E /* CharacterTableViewController.swift */,
 				93F1A9602413FDA300E296BF /* DetailViewController.swift */,
@@ -191,6 +204,8 @@
 			isa = PBXGroup;
 			children = (
 				93086CEC2412D927004CBB1E /* Tools.swift */,
+				93A525522415CA5100A43626 /* MessageView.swift */,
+				93A525562415D64C00A43626 /* AlertWindow.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -205,9 +220,20 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		93A5254F2415C33200A43626 /* Modal */ = {
+			isa = PBXGroup;
+			children = (
+				93A525502415C5FE00A43626 /* ModalLocationViewController.swift */,
+			);
+			path = Modal;
+			sourceTree = "<group>";
+		};
 		93F1A95D2413689100E296BF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				93A525542415CB9C00A43626 /* nube.png */,
+				93A5254D2415C02A00A43626 /* nowifi.png */,
+				93A5254B2415BEB300A43626 /* title.png */,
 				93F1A95E2413693600E296BF /* navegador.png */,
 			);
 			path = Resources;
@@ -295,9 +321,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				93086CCA2412C7A6004CBB1E /* LaunchScreen.storyboard in Resources */,
+				93A525552415CB9C00A43626 /* nube.png in Resources */,
 				93086CC72412C7A6004CBB1E /* Assets.xcassets in Resources */,
 				93086CC52412C7A4004CBB1E /* Main.storyboard in Resources */,
 				93F1A95F2413693700E296BF /* navegador.png in Resources */,
+				93A5254C2415BEB300A43626 /* title.png in Resources */,
+				93A5254E2415C02A00A43626 /* nowifi.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +347,7 @@
 				93086CF124130A2D004CBB1E /* CharacterViewModel.swift in Sources */,
 				93086CE82412D821004CBB1E /* AppConfigurator.swift in Sources */,
 				93F1A95A24134ED200E296BF /* LoaderCell.swift in Sources */,
+				93A525572415D64C00A43626 /* AlertWindow.swift in Sources */,
 				93F1A95C241366E000E296BF /* Error.swift in Sources */,
 				93086CBE2412C7A4004CBB1E /* AppDelegate.swift in Sources */,
 				93086CEF241309CF004CBB1E /* CharacterTableViewController.swift in Sources */,
@@ -327,9 +357,11 @@
 				93086CF324130A9A004CBB1E /* CharacterRM.swift in Sources */,
 				93086CF6241315D1004CBB1E /* CharacterTableViewCell.swift in Sources */,
 				93C001B424148794007EF2C1 /* EpisodeCollectionCell.swift in Sources */,
+				93A525532415CA5100A43626 /* MessageView.swift in Sources */,
 				93086CEA2412D833004CBB1E /* Strings.swift in Sources */,
 				93086CC02412C7A4004CBB1E /* SceneDelegate.swift in Sources */,
 				93F1A9632413FF5E00E296BF /* DetailViewModel.swift in Sources */,
+				93A525512415C5FE00A43626 /* ModalLocationViewController.swift in Sources */,
 				93F1A9612413FDA300E296BF /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

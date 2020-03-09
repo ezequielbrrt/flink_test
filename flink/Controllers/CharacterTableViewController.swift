@@ -9,18 +9,26 @@
 import Foundation
 import UIKit
 
-class CharacterTableViewController: UITableViewController, UISearchResultsUpdating{
+class CharacterTableViewController: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate{
     
     var resultSearchController = UISearchController()
     var characterListViewModel = CharacterListViewModel()
     
     var nextPage: String = ""
     var isUpdating: Bool = false
-
+    var auxTexSearchBar: String = ""
+    var queryParameter: String = "name"
+    let itemsStatus = ["Alive" , "Dead", "Unknown"]
+    let itemsGenders = ["Female", "Male", "Genderless", "Unknown"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configUI()
+        populateCharacters()
+        
+    }
+    
+    @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
         populateCharacters()
     }
     
@@ -28,56 +36,53 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         self.navigationItem.largeTitleDisplayMode = .always
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
-        
-        resultSearchController = ({
-               let controller = UISearchController(searchResultsController: nil)
-               controller.searchResultsUpdater = self
-               controller.searchBar.sizeToFit()
 
-               tableView.tableHeaderView = controller.searchBar
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl!.attributedTitle = NSAttributedString(string: Strings.pullToGet)
+        self.refreshControl!.addTarget(self, action: #selector(handleRefresh(_:)), for: UIControl.Event.valueChanged)
+        tableView.addSubview(self.refreshControl!)
+        
+        configSearchBar(placeHolder: Strings.searchByName)
+    
+    }
+    
+    private func configSearchBar(placeHolder: String) {
+        
+        resultSearchController.searchResultsUpdater = self
+        resultSearchController.searchBar.sizeToFit()
+        resultSearchController.searchBar.placeholder = placeHolder
+        resultSearchController.searchBar.showsCancelButton = false
+        tableView.tableHeaderView = resultSearchController.searchBar
 
-               return controller
-           })()
+    }
+    
+    private func configSegmentedStatus(){
+        self.tableView.tableHeaderView = nil
         
+        let segmentedControl = UISegmentedControl(items : itemsStatus)
+        segmentedControl.addTarget(self, action: #selector(self.indexChangedStatus(_:)), for: .valueChanged)
+
+        self.tableView.tableHeaderView = segmentedControl
+    }
+    
+    private func configSegmentedGender(){
+       self.tableView.tableHeaderView = nil
         
+        let segmentedControl = UISegmentedControl(items : itemsGenders)
+        segmentedControl.addTarget(self, action: #selector(self.indexChangedGender(_:)), for: .valueChanged)
+
+        self.tableView.tableHeaderView = segmentedControl
     }
     
     private func findCharacter(name : String){
+        
         self.tableView.showLoader()
         self.characterListViewModel.restoreCharacters()
         self.tableView.reloadData()
 
-        Webservice().load(resource: CharactersOptions.getCharacterByName(name: name)){[weak self] result in
-            DispatchQueue.main.async {
-                switch result{
-                    case .success(let response):
-                        self?.nextPage = response.info.next
-                        self?.tableView.restore(showSingleLine: true)
-                        self?.characterListViewModel.charactersViewModel = response.results.map(CharacterViewModel.init)
-                       
-                        if !(self?.nextPage.isEmpty)!{
-                            self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
-                        }
-                        
-                        self?.tableView.reloadData()
-                    case .failure(_):
-                        self?.tableView.restore(showSingleLine: false)
-                        self?.tableView.setEmptyView(title: "Sin resultados", message: "Tú busqueda no arrojo ningún resultado", messageImage: UIImage.init(named: "navegador.png")!)
-                        
-                }
-            }
-            
-            
-        }
-        
-    }
-    
-    private func populateCharacters(nextPage: String = ""){
-        self.tableView.showLoader()
-        
-        if nextPage.isEmpty{
-            DispatchQueue.main.async {
-                Webservice().load(resource: CharactersOptions.get){[weak self] result in
+        if let character = CharactersOptions.getCharacterByName(name: name, queryParameter: self.queryParameter){
+            Webservice().load(resource:character){[weak self] result in
+                DispatchQueue.main.async {
                     switch result{
                         case .success(let response):
                             self?.nextPage = response.info.next
@@ -85,40 +90,93 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
                             self?.characterListViewModel.charactersViewModel = response.results.map(CharacterViewModel.init)
                            
                             if !(self?.nextPage.isEmpty)!{
-                            self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
+                                self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
                             }
                             
                             self?.tableView.reloadData()
-                        case .failure(let error):
-                            print(error)
+                        case .failure(_):
+                            self?.tableView.restore(showSingleLine: false)
+                            self?.tableView.setEmptyView(title: Strings.noResults, message: Strings.noResultsDesc, messageImage: UIImage.init(named: "navegador.png")!)
+                            
                     }
-                    
                 }
+                
+                
             }
             
         }else{
-            DispatchQueue.main.async {
-                Webservice().load(resource: CharactersOptions.getCharacterNP(page: nextPage)){[weak self] result in
-                    switch result{
-                        case .success(let response):
-                            
-                            self?.nextPage = response.info.next
+            
+            self.tableView.restore(showSingleLine: false)
+            self.tableView.setEmptyView(title: Strings.errorSearch, message: Strings.errorSearchDesc, messageImage: UIImage.init(named: "nube.png")!)
+        }
+            
+    }
+    
+    private func populateCharacters(nextPage: String = ""){
+        
+        self.tableView.showLoader()
+        
+        if Tools.hasInternet(){
+            self.tableView.isScrollEnabled = true
+            if nextPage.isEmpty{
+                DispatchQueue.main.async {
+                    Webservice().load(resource: CharactersOptions.get){[weak self] result in
+                        if (self?.refreshControl!.isRefreshing)!{
+                            self?.refreshControl?.endRefreshing()
+                        }
                         
-                            self?.characterListViewModel.charactersViewModel.append(contentsOf: response.results.map(CharacterViewModel.init))
-                                
-                               if !(self?.nextPage.isEmpty)!{
-                            self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
+                        switch result{
+                            case .success(let response):
+                                self?.nextPage = response.info.next
+                                self?.tableView.restore(showSingleLine: true)
+                                self?.characterListViewModel.charactersViewModel = response.results.map(CharacterViewModel.init)
+                               
+                                if !(self?.nextPage.isEmpty)!{
+                                self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
                                 }
-                            
-                            self?.tableView.reloadData()
-                            self?.isUpdating = false
-                        case .failure(let error):
-                            print(error)
+                                
+                                self?.tableView.reloadData()
+                            case .failure(let error):
+                                print(error)
+                        }
+                        
                     }
-                    
+                }
+                
+            }else{
+                DispatchQueue.main.async {
+                    Webservice().load(resource: CharactersOptions.getCharacterNP(page: nextPage)){[weak self] result in
+                        switch result{
+                            case .success(let response):
+                                
+                                self?.nextPage = response.info.next
+                            
+                                self?.characterListViewModel.charactersViewModel.append(contentsOf: response.results.map(CharacterViewModel.init))
+                                    
+                                   if !(self?.nextPage.isEmpty)!{
+                                self?.characterListViewModel.charactersViewModel.append((self?.characterListViewModel.getNilObject())!)
+                                    }
+                                
+                                self?.tableView.reloadData()
+                                self?.isUpdating = false
+                            case .failure(let error):
+                                print(error)
+                        }
+                        
+                    }
                 }
             }
+        }else{
+            self.tableView.isScrollEnabled = false
+            self.tableView.restore(showSingleLine: false)
+            self.tableView.setEmptyView(title: Strings.noWifi, message: Strings.noWifiDesc, messageImage: UIImage.init(named: "nowifi.png")!, select: #selector(self.retryConnection), delegate: self)
         }
+        
+    }
+    
+    @objc func retryConnection() {
+        self.tableView.restore(showSingleLine: false)
+        populateCharacters()
     }
     
     // MARK: TABLE VIEW METHODS
@@ -128,7 +186,7 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if self.nextPage.isEmpty{
+        if !self.nextPage.isEmpty{
             return self.characterListViewModel.charactersViewModel.count - 1
         }else{
             return self.characterListViewModel.charactersViewModel.count
@@ -183,26 +241,104 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         let height = scrollView.frame.size.height
         let contentYoffset = scrollView.contentOffset.y
         let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+        
+        
         if distanceFromBottom < height {
             if !self.nextPage.isEmpty{
                 if !self.isUpdating{
                     self.isUpdating = true
+                    if Tools.hasInternet(){
                     self.characterListViewModel.charactersViewModel.removeLast()
-                    self.populateCharacters(nextPage: nextPage)
-
+                        self.populateCharacters(nextPage: nextPage)
+                    }else{
+                        showAlertNoWifi()
+                    }
+                    
                 }
                 
             }
         }
+        
+    }
+    
+    private func showAlertNoWifi(){
+        let alert = UIAlertController(title: Strings.noWifi, message: Strings.noWifiDesc, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Strings.ok, style: .default, handler:nil))
+        self.present(alert, animated: true)
     }
     
     
+    @IBAction func searchFilter(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Select search filter", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Name", style: .default, handler: {action in
+            self.configSearchBar(placeHolder: Strings.searchByName)
+            self.queryParameter = "name"
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Status", style: .default, handler: {action in
+            self.configSegmentedStatus()
+            self.queryParameter = "status"
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Specie", style: .default, handler: {action in
+            self.configSearchBar(placeHolder: Strings.searchBySpecie)
+            self.queryParameter = "species"
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Type", style: .default, handler: {action in
+            self.configSearchBar(placeHolder: Strings.searchByType)
+            self.queryParameter = "type"
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Gender", style: .default, handler: {action in
+            self.configSegmentedGender()
+            self.queryParameter = "gender"
+        }))
+        alert.addAction(UIAlertAction(title: Strings.cancel, style: .cancel, handler: nil))
+
+    
+        self.present(alert, animated: true)
+    }
+    
+    @objc private func indexChangedStatus(_ sender: UISegmentedControl){
+        switch sender.selectedSegmentIndex{
+        case 0:
+            self.findCharacter(name: itemsStatus[sender.selectedSegmentIndex])
+        case 1:
+            self.findCharacter(name: itemsStatus[sender.selectedSegmentIndex])
+        case 2:
+            self.findCharacter(name: itemsStatus[sender.selectedSegmentIndex])
+        default:
+            break
+        }
+    }
+    
+    @objc private func indexChangedGender(_ sender: UISegmentedControl){
+        switch sender.selectedSegmentIndex{
+        case 0:
+            self.findCharacter(name: itemsGenders[sender.selectedSegmentIndex])
+        case 1:
+            self.findCharacter(name: itemsGenders[sender.selectedSegmentIndex])
+        case 2:
+            self.findCharacter(name: itemsGenders[sender.selectedSegmentIndex])
+        case 3:
+            self.findCharacter(name: itemsGenders[sender.selectedSegmentIndex])
+        default:
+            break
+        }
+    }
     
     // MARK: SEARCH BAR METHODS
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        view.endEditing(true)
+    }
     
     func updateSearchResults(for searchController: UISearchController) {
     
         let text = searchController.searchBar.text!
+        self.auxTexSearchBar = text
         
         if (searchController.isBeingPresented){
             self.characterListViewModel.auxCharacters = self.characterListViewModel.charactersViewModel
@@ -210,16 +346,11 @@ class CharacterTableViewController: UITableViewController, UISearchResultsUpdati
         
         if (!searchController.isBeingPresented){
             if !text.isEmpty{
-                self.findCharacter(name: text.replacingOccurrences(of: " ", with: "%20"))
+                if Tools.hasInternet(){
+                    self.findCharacter(name: text.replacingOccurrences(of: " ", with: "%20"))
+                }
             }
         }
-        if (searchController.isBeingDismissed){
-            if text.isEmpty{
-                self.characterListViewModel.charactersViewModel = self.characterListViewModel.auxCharacters
-                self.tableView.reloadData()
-            }
-            
-        }
-        
+    
     }
 }

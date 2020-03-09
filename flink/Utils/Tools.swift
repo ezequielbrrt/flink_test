@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SystemConfiguration
 
 class Tools: NSObject{
     
@@ -38,6 +39,83 @@ class Tools: NSObject{
                     completion(nil, NSError(domain:"", code:401, userInfo:[ NSLocalizedDescriptionKey: "Error getting image"]))
                 }
             }.resume()
+        }
+    }
+    
+    class func upView(View : UIView, Points : CGFloat) {
+        var NewFrame : CGRect = View.frame
+        NewFrame.origin.y = View.frame.origin.y - Points
+        View.frame = NewFrame
+    }
+    
+    class func downView(View : UIView, Points : CGFloat) {
+        var NewFrame : CGRect = View.frame
+        NewFrame.origin.y = View.frame.origin.y + Points
+        View.frame = NewFrame
+    }
+    
+    class func pushViewCenter(View : UIView, Points : CGFloat) {
+        var NewFrame : CGPoint = View.center
+        NewFrame.x = View.center.x + Points;
+        View.center = NewFrame
+    }
+    
+    class func pullViewCenter(View : UIView, Points : CGFloat) {
+        var NewFrame : CGPoint = View.center
+        NewFrame.x = View.center.x - Points;
+        View.center = NewFrame
+    }
+    
+    
+    class func hasInternet() -> Bool{
+        
+           var zeroAddress = sockaddr_in()
+           zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+           zeroAddress.sin_family = sa_family_t(AF_INET)
+           
+           let defaultRouteReachability = withUnsafePointer(to: &zeroAddress) {
+               $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {zeroSockAddress in
+                   SCNetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
+               }
+           }
+           
+           var flags = SCNetworkReachabilityFlags()
+           if !SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) {
+               return false
+           }
+           let isReachable = flags.contains(.reachable)
+           let needsConnection = flags.contains(.connectionRequired)
+           return (isReachable && !needsConnection)
+       }
+    
+    class func showSlowConnectionView (inView : UIViewController)
+    {
+        
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.warning)
+        
+        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let slowConnectionView : MessageView = storyboard.instantiateViewController(withIdentifier: "MessageView") as! MessageView
+        
+        let screenFrame : CGRect = CGRect(x: 0,
+                                          y: -100,
+                                          width: UIScreen.main.bounds.size.width,
+                                          height: 100)
+        
+        slowConnectionView.view.frame = screenFrame
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        
+        inView.view.addSubview(slowConnectionView.view);
+        inView.view.bringSubviewToFront(slowConnectionView.view)
+        
+        
+        slowConnectionView.show()
+        
+        let dispatchTime = (DispatchTime.now() + 4.0)
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime)
+        {
+            slowConnectionView.hidden()
         }
     }
 
