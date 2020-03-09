@@ -42,7 +42,9 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         configUiCard(view: self.originView)
         configUiCard(view: self.LocationView)
         let gesture = UITapGestureRecognizer(target: self, action:  #selector(self.showLocationModal))
+        let gestureOrigin = UITapGestureRecognizer(target: self, action:  #selector(self.showOriginModal))
         self.LocationView.addGestureRecognizer(gesture)
+        self.originView.addGestureRecognizer(gestureOrigin)
     }
     
     private func configUiCard(view: UIView){
@@ -54,9 +56,17 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     @objc private func showLocationModal(){
+        showModal(id: self.dvm!.characterDetail.location!.url.components(separatedBy: "/").last!)
+    }
+    
+    @objc private func showOriginModal(){
+        showModal(id: self.dvm!.characterDetail.origin!.url.components(separatedBy: "/").last!)
+    }
+    
+    private func showModal(id: String){
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let modalLocation = storyBoard.instantiateViewController(withIdentifier: "ModalLocationViewController") as! ModalLocationViewController
-        modalLocation.locationId = self.dvm!.characterDetail.location!.url.components(separatedBy: "/").last
+        modalLocation.locationId = id
         modalLocation.modalPresentationStyle = .overFullScreen
         self.present(modalLocation, animated: true, completion: nil)
     }
