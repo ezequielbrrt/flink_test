@@ -58,10 +58,8 @@ class CharactersOptions: NSObject{
     
     static func getCharacterByName(name: String, queryParameter: String) -> Resource<ServiceResponse>?{
         guard let url = URL(string: AppConfigurator.APIUrl + AppUrls.getCharacters.rawValue  + "?" + queryParameter + "=" + name) else{
-            print("Error de url")
             return nil
         }
-        print(url)
         return Resource<ServiceResponse>(url: url)
     }
 }

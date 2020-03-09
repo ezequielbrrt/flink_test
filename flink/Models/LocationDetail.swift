@@ -21,7 +21,7 @@ class LocationDetailRequests: NSObject{
         guard let url = URL (string: AppConfigurator.APIUrl + AppUrls.getLocation.rawValue + locationId) else{
             fatalError("URL incorrect")
         }
-        print(url)
+    
         return Resource<LocationDetail>(url: url)
     }
 }

@@ -16,9 +16,18 @@ class ModalLocationViewController: UIViewController {
     @IBOutlet weak var typeLabel: UILabel!
     @IBOutlet weak var dimensionLabel: UILabel!
     @IBOutlet weak var containerView: UIView!
+    @IBOutlet weak var nameTitleLabel: UILabel!
+    @IBOutlet weak var typeTitleLabel: UILabel!
+    @IBOutlet weak var dimentsionTitleLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet var stackView: [UIStackView]!
     
+    
+    var isLocation: Bool = true
     var locationId: String?
+    
     var vm: LocationViewModel = LocationViewModel()
+    var vmEpisode: EpisodeViewModel = EpisodeViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,21 +40,40 @@ class ModalLocationViewController: UIViewController {
     private func populateData(){
 
         if Tools.hasInternet(){
-            Webservice().load(resource:LocationDetailRequests.getLocationDetail(locationId: locationId!)){[weak self] result in
-                DispatchQueue.main.async {
-                    switch result{
-                        case .success(let response):
-                            self?.loader.stopAnimating()
-                            self?.vm.location = response
-                            self?.setUpData(location: (self?.vm.location!)!)
-                            
-                        case .failure(let error):
-                            
-                            print(error)
+            if isLocation {
+                Webservice().load(resource:LocationDetailRequests.getLocationDetail(locationId: locationId!)){[weak self] result in
+                    DispatchQueue.main.async {
+                        switch result{
+                            case .success(let response):
+                                self?.loader.stopAnimating()
+                                self?.showElements(hidden: false)
+                                self?.vm.location = response
+                                self?.setUpData(location: (self?.vm.location!)!)
+                                
+                            case .failure(let error):
+                                print(error)
+                        }
                     }
+                    
                 }
-                
+            }else{
+               Webservice().load(resource:EpisodeRequest.getEpisodeId(episodeId: locationId!)){[weak self] result in
+                    DispatchQueue.main.async {
+                        switch result{
+                            case .success(let response):
+                                self?.loader.stopAnimating()
+                                self?.showElements(hidden: false)
+                                self?.vmEpisode.episode = response
+                                self?.setUpDataEpisode(episode: (self?.vmEpisode.episode!)!)
+                                
+                            case .failure(let error):
+                                print(error)
+                        }
+                    }
+                    
+                }
             }
+            
         }
         
     }
@@ -56,12 +84,28 @@ class ModalLocationViewController: UIViewController {
         self.dimensionLabel.text = location.dimension
     }
     
+    private func setUpDataEpisode(episode: EpisodeDetail){
+        self.nameLabel.text = episode.name
+        self.typeLabel.text = episode.episode
+        self.dimensionLabel.text = episode.airDate
+        self.typeTitleLabel.text = "Episode"
+        self.dimentsionTitleLabel.text = "Air date"
+        self.titleLabel.text = "Episode location"
+    }
+    
+    private func showElements(hidden: Bool){
+        self.titleLabel.isHidden = hidden
+        for sv in stackView{
+            sv.isHidden = hidden
+        }
+    }
+    
     private func configUI(){
         loader.style = .large
         loader.color = AppConfigurator.mainColor
         loader.hidesWhenStopped = true
         loader.startAnimating()
-
+        showElements(hidden: true)
         view.backgroundColor = UIColor.clear
         view.isOpaque = false
         self.containerView.layer.cornerRadius = 15

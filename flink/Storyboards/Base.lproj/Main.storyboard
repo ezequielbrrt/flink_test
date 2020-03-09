@@ -434,6 +434,7 @@
                     <navigationItem key="navigationItem" title="Detail" id="kPU-fe-5Io"/>
                     <connections>
                         <outlet property="LocationView" destination="r7M-7O-woq" id="g6N-a1-isK"/>
+                        <outlet property="episodeCollectionView" destination="t3C-i4-7yB" id="4Lc-rM-zxU"/>
                         <outlet property="genderLabel" destination="BE5-fA-O8c" id="jix-1d-8fc"/>
                         <outlet property="locationLabel" destination="G0N-vX-d1f" id="78b-az-qTB"/>
                         <outlet property="originLabel" destination="t8c-7q-hAr" id="em3-jG-yyl"/>
@@ -604,9 +605,16 @@
                         <outlet property="backgroundView" destination="Wqb-DW-Bh6" id="0W3-EN-8oU"/>
                         <outlet property="containerView" destination="f3R-Jn-vtl" id="3Ry-cH-rbH"/>
                         <outlet property="dimensionLabel" destination="aMU-mM-SyL" id="Cne-PP-QPG"/>
+                        <outlet property="dimentsionTitleLabel" destination="JVX-WL-UBd" id="Fe1-Mw-GEe"/>
                         <outlet property="loader" destination="vK3-6a-XB0" id="nwr-zH-w2N"/>
                         <outlet property="nameLabel" destination="ZIN-1z-InN" id="V99-Xh-gtQ"/>
+                        <outlet property="nameTitleLabel" destination="B1U-LE-DJx" id="R4j-Qg-gKu"/>
+                        <outlet property="titleLabel" destination="fc2-De-Kzf" id="Zj8-yf-R5d"/>
                         <outlet property="typeLabel" destination="UF3-dy-7sn" id="yY8-Cc-dkG"/>
+                        <outlet property="typeTitleLabel" destination="8Ys-Vt-axb" id="e1R-xN-2UX"/>
+                        <outletCollection property="stackView" destination="qdO-gO-lt7" collectionClass="NSMutableArray" id="mDU-61-89U"/>
+                        <outletCollection property="stackView" destination="5Ri-cN-4UF" collectionClass="NSMutableArray" id="7fv-K1-Iso"/>
+                        <outletCollection property="stackView" destination="oMS-Sm-pif" collectionClass="NSMutableArray" id="D5H-KN-N2T"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Ja-kh-O2T" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

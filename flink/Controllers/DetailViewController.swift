@@ -19,6 +19,7 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet weak var originView: UIView!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var LocationView: UIView!
+    @IBOutlet weak var episodeCollectionView: UICollectionView!
     
     var character: ResultCharacter?
     var dvm: DetailViewModel?
@@ -41,10 +42,13 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         configUiCard(view: self.originView)
         configUiCard(view: self.LocationView)
+        
         let gesture = UITapGestureRecognizer(target: self, action:  #selector(self.showLocationModal))
         let gestureOrigin = UITapGestureRecognizer(target: self, action:  #selector(self.showOriginModal))
+        
         self.LocationView.addGestureRecognizer(gesture)
         self.originView.addGestureRecognizer(gestureOrigin)
+    
     }
     
     private func configUiCard(view: UIView){
@@ -56,17 +60,28 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     @objc private func showLocationModal(){
-        showModal(id: self.dvm!.characterDetail.location!.url.components(separatedBy: "/").last!)
+        if Tools.hasInternet(){
+            showModal(id: self.dvm!.characterDetail.location!.url.components(separatedBy: "/").last!)
+        }else{
+            showAlertNoWifi()
+        }
+        
     }
     
     @objc private func showOriginModal(){
-        showModal(id: self.dvm!.characterDetail.origin!.url.components(separatedBy: "/").last!)
+        if Tools.hasInternet(){
+            showModal(id: self.dvm!.characterDetail.origin!.url.components(separatedBy: "/").last!)
+        }else{
+            showAlertNoWifi()
+        }
+        
     }
     
-    private func showModal(id: String){
+    private func showModal(id: String, isLocation: Bool = true){
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let modalLocation = storyBoard.instantiateViewController(withIdentifier: "ModalLocationViewController") as! ModalLocationViewController
         modalLocation.locationId = id
+        modalLocation.isLocation = isLocation
         modalLocation.modalPresentationStyle = .overFullScreen
         self.present(modalLocation, animated: true, completion: nil)
     }
@@ -90,8 +105,25 @@ class DetailViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
 
-
+    private func showAlertNoWifi(){
+        let alert = UIAlertController(title: Strings.noWifi, message: Strings.noWifiDesc, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Strings.ok, style: .default, handler:nil))
+        self.present(alert, animated: true)
+    }
+    
     //MARK: COLLECTIONVIEW METHODS
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if Tools.hasInternet(){
+            let episodeUrl = self.dvm?.characterDetail.episode![indexPath.row]
+            showModal(id: (episodeUrl?.components(separatedBy: "/").last)!, isLocation: false)
+        }else{
+            showAlertNoWifi()
+        }
+        
+        
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.dvm!.characterDetail.episode!.count
     }
